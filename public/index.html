@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earthquake Finder</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/css/stylesheet.css">
+    <link rel="shorcut icon" href="assets/img/logo.png">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#"><img src="assets/img/logo.png" alt="logo" class="logo">Earthquake Finder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav nv">
+                <a class="nav-link active" href="#">Home<span class="sr-only">(current)</span></a>
+                <a class="nav-link" data-toggle="modal" data-target="#historyModal" id="btnSearchHistory">Search history</a>
+                <a class="nav-link" href="#">Top 10</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <div id="information" class="box-center">
+            <h1>Earthquake Finder</h1>
+            <p>On this website you can search for earthquakes by city, just type the name of the city or location and press the search button. You can press the markers on the map to get additional information on that earthquake.</p>
+        </div>
+        <form action="submit" id="formCity" class="box-center-row">
+            <input type="text" id="city" class="form-control" placeholder="Type a city">
+            <button type="submit" id="btnRequest" class="btn btn-primary">Search</button>
+        </form>
+        <p id="msg" class="message box-center"></p>
+        <div id="map"></div>
+    </main>
+    <footer>
+        <h6>Web application developed by Pedro Alcedo, 2021</h6>
+    </footer>
+
+    <!-- History modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="historyModalLabel">Search history</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3>This section shows all the searches you have made during a session</h3>
+                    <p id="msgModal"></p>
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>City</th>
+                                <th>Search again</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyCities">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCloseModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger">Clear history</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+<script src="assets/js/app.js"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXNtsJO5eXGWDYc1YgOMlIruXQXbEOVcc&callback=initMap"></script>
+<script src="https://kit.fontawesome.com/bd4bac141d.js" crossorigin="anonymous"></script>
+
+</html>

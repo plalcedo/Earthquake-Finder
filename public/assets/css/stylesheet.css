@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Solid&family=Padauk&display=swap');
+
+/* Tags */
+
+body {
+    background: #ebeaee;
+    font-family: 'Padauk', sans-serif;
+    position: relative;
+    min-height: 100vh;
+}
+
+main {
+    padding: 10px;
+    padding-bottom: 60px;
+}
+
+h1 {
+    font-family: 'Londrina Solid', cursive;
+    margin-top: 20px;
+    color: #343a40;
+}
+
+footer {
+    width: 100%;
+    height: 30px;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    padding: 10px;
+}
+
+
+/* Id's */
+
+#map {
+    width: 80%;
+    height: 500px;
+    border: 1px solid black;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin: auto;
+}
+
+#information p {
+    text-align: justify;
+}
+
+#formCity {
+    padding: 20px;
+}
+
+#formCity input {
+    width: 20%;
+}
+
+#formCity button {
+    margin-left: 10px;
+}
+
+
+/* Classes */
+
+.logo {
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+}
+
+.box-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.box-center-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 20px;
+}
+
+.message {
+    margin: auto;
+    padding-bottom: 10px;
+}
+
+.nv a {
+    cursor: pointer;
+}
+
+
+/* Responsive Design*/
