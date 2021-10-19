@@ -18,7 +18,7 @@ function initMap() {
 
 window.addEventListener('DOMContentLoaded', () => {
 
-    // ----------- Events ----------- //
+    // ---------------------- Events ---------------------- //
 
     // Search button
     document.getElementById("btnRequest").addEventListener('click', (event) => {
@@ -27,7 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const city = document.getElementById("city").value;
 
         if (city.length > 0) {
-            searchCity(city);
+            searchCity(city, 1);
         } else {
             notifier.alert('Complete the field to search for a city.', options)
         }
@@ -58,11 +58,12 @@ window.addEventListener('DOMContentLoaded', () => {
         searchTop10();
     })
 
-    // ----------- Functions ----------- //
+    // ---------------------- Functions ---------------------- //
 
     // This function is the one in charge to search for the city boundaries, then it calls the createMap function
+    // The variable save determines if it has to save the city in the search history or not
 
-    async function searchCity(city) {
+    async function searchCity(city, save) {
         // Sending the city to the Nominatim API, this one helps me to get the city bounding box coordinates (North, south, east and west)
         const nominatinResponse = await fetch(`https://nominatim.openstreetmap.org/search?city=${city}&format=json&limit=1&accept-language=en`);
         const cityInformation = await nominatinResponse.json();
@@ -91,21 +92,23 @@ window.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Plotting the earthquakes in the map
                 notifier.success("Showing results for: " + displayName, options)
+            }
+            // Get the lat and lon
+            const lat = Number(cityInformation[0].lat);
+            const lon = Number(cityInformation[0].lon);
 
-                // Get the lat and lon
-                const lat = Number(cityInformation[0].lat);
-                const lon = Number(cityInformation[0].lon);
+            // Creating the map 
+            createMap(lat, lon, eartquakesLength, earthquakes);
 
-                // Creating the map 
-                createMap(lat, lon, eartquakesLength, earthquakes);
-
-                // Saving the city in the search history
+            // Saving the city in the search history
+            if (save == 1) {
                 let citiesHistory = JSON.parse(localStorage.getItem("cities"));
                 citiesHistory[citiesHistory.length] = city;
                 storage.setItem('cities', JSON.stringify(citiesHistory));
             }
         }
     }
+
 
     // This function allows me to create the map and plot the markers
 
@@ -160,7 +163,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (citiesHistory.length > 0) {
             document.getElementById("msgModal").innerText = "";
 
-            // Im gonna code here an algorithm to fill the table in the Search History section, and also allow to search for that city again
+            // Algorithm to fill the table in the Search History section, also allow to search for that city again
             /*  Template:
                 <tbody id="tableBodyCities">
                     <tr>
@@ -187,7 +190,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll(".btnSearch").forEach(btn => {
                     btn.addEventListener('click', (event) => {
                         let city = event.target.dataset.id;
-                        searchCity(city);
+                        searchCity(city, 0);
                         document.getElementById("city").value = city;
                         document.getElementById("btnCloseModal").click();
                     });
