@@ -1,31 +1,35 @@
 let map;
 let storage = window.localStorage;
+let options = {
+    position: "bottom-right",
+    animationDuration: 300,
+    maxNotifications: 3
+}
+let notifier = new AWN(options);
 
 // Initialize the array with the cities, this means that everytime an user opens the app it will restart.
-//let cities = ['Monterrey', 'Paris'];
 let cities = [];
 storage.setItem('cities', JSON.stringify(cities));
 
 function initMap() {
     document.getElementById("msg").classList.remove();
-    document.getElementById("msg").innerText = "Type a city above to search for earthquakes.";
+    document.getElementById("msg").innerText = "Type a city above to search for earthquakes, the map will display after that below this message.";
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 
-    // ----------- Events -----------
+    // ----------- Events ----------- //
 
     // Search button
     document.getElementById("btnRequest").addEventListener('click', (event) => {
         event.preventDefault();
+        document.getElementById("msg").innerText = "";
         const city = document.getElementById("city").value;
 
         if (city.length > 0) {
             searchCity(city);
         } else {
-            document.getElementById("msg").classList.remove();
-            document.getElementById("msg").classList.add("text-danger");
-            document.getElementById("msg").innerText = "Complete the field above";
+            notifier.alert('Complete the field to search for a city.', options)
         }
     });
 
@@ -34,7 +38,25 @@ window.addEventListener('DOMContentLoaded', () => {
         searchHistory();
     });
 
-    // ----------- Functions -----------
+    // Clear search history
+    document.getElementById("btnClearHistory").addEventListener('click', () => {
+        let citiesHistory = JSON.parse(localStorage.getItem("cities"));
+        if (citiesHistory.length > 0) {
+            let cities = [];
+            storage.setItem('cities', JSON.stringify(cities));
+            document.getElementById("btnCloseModal").click();
+            let table = document.getElementById("tableBodyCities");
+            table.innerHTML = "";
+            notifier.success('Your search history was successful cleared.', options);
+        } else {
+            notifier.warning('Your search history is already empty.')
+        }
+    });
+
+    // Call the Top10 function
+    searchTop10();
+
+    // ----------- Functions ----------- //
 
     // This function is the one in charge to search for the city boundaries, then it calls the createMap function
 
@@ -42,12 +64,9 @@ window.addEventListener('DOMContentLoaded', () => {
         // Sending the city to the Nominatim API, this one helps me to get the city bounding box coordinates (North, south, east and west)
         const nominatinResponse = await fetch(`https://nominatim.openstreetmap.org/search?city=${city}&format=json&limit=1&accept-language=en`);
         const cityInformation = await nominatinResponse.json();
-        console.log(cityInformation);
 
         if (cityInformation.length == 0) {
-            document.getElementById("msg").classList.remove();
-            document.getElementById("msg").classList.add("text-danger");
-            document.getElementById("msg").innerText = "Sorry, we could not find any city.";
+            notifier.alert('Sorry, we could not find any city with that name.', options);
         } else {
 
             // Get the Bounding Box
@@ -59,30 +78,17 @@ window.addEventListener('DOMContentLoaded', () => {
             // Get the complete name for this city, for information purposes
             const displayName = cityInformation[0].display_name;
 
-            console.log(south);
-            console.log(north);
-            console.log(west);
-            console.log(east);
-            console.log(displayName);
-
             // Calling the Geonames API to get the Earthquakes, I am saving my username for this service in a constant
             const username = 'plalcedo';
             const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&username=${username}`);
             const earthquakes = await geonamesResponse.json();
             const eartquakesLength = earthquakes.earthquakes.length;
 
-            console.log(earthquakes);
-            console.log(eartquakesLength);
-
             if (eartquakesLength == 0) {
-                document.getElementById("msg").classList.remove();
-                document.getElementById("msg").classList.add("text-danger");
-                document.getElementById("msg").innerText = "There are not earthquakes to show in this city. Try with another one.";
+                notifier.warning('There are not earthquakes to show in this city (' + city + '). Try with another one.', options);
             } else {
                 // Plotting the earthquakes in the map
-                document.getElementById("msg").classList.remove();
-                document.getElementById("msg").classList.add("text-success");
-                document.getElementById("msg").innerText = "Showing results for: " + displayName;
+                notifier.success("Showing results for: " + displayName, options)
 
                 // Get the lat and lon
                 const lat = Number(cityInformation[0].lat);
@@ -190,7 +196,30 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById("msgModal").classList.add("text-danger");
             document.getElementById("msgModal").innerText = "There are no cities in the search history, try to go and search for a city and then come back here.";
         }
+    }
 
+    // This function searches for the Top 10 largest earthquakes
+
+    async function searchTop10() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const inputDate = `${year}-${month}-${day}`;
+        const maxRows = null;
+
+        // Bounding box coordinates fot the entire world
+        const north = 85;
+        const south = -85;
+        const east = 180;
+        const west = -180;
+
+        // Calling the Geonames API to get the Earthquakes, I am saving my username for this service in a constant
+        const username = 'plalcedo';
+        const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&date=${inputDate}&username=${username}`);
+        const earthquakes = await geonamesResponse.json();
+
+        console.log(earthquakes);
     }
 
 });

@@ -8,20 +8,22 @@
     <title>Earthquake Finder</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/stylesheet.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
     <link rel="shorcut icon" href="assets/img/logo.png">
+    <script src="assets/js/index.var.js"></script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#"><img src="assets/img/logo.png" alt="logo" class="logo">Earthquake Finder</a>
+        <a class="navbar-brand" href="index.html"><img src="assets/img/logo.png" alt="logo" class="logo">Earthquake Finder</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav nv">
-                <a class="nav-link active" href="#">Home<span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="index.html">Home<span class="sr-only">(current)</span></a>
                 <a class="nav-link" data-toggle="modal" data-target="#historyModal" id="btnSearchHistory">Search history</a>
-                <a class="nav-link" href="#">Top 10</a>
+                <a class="nav-link" data-toggle="modal" data-target="#top10Modal">Top 10</a>
             </div>
         </div>
     </nav>
@@ -68,7 +70,38 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="btnCloseModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger">Clear history</button>
+                    <button type="button" class="btn btn-danger" id="btnClearHistory">Clear history</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 10 Modal -->
+    <div class="modal fade" id="top10Modal" tabindex="-1" aria-labelledby="top10ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="top10ModalLabel">Top 10 earthquakes in the last year (by magnitude)</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Location</th>
+                                <th>Magnitude</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyTop10">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCloseModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
