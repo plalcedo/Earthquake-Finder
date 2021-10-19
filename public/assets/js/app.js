@@ -47,14 +47,16 @@ window.addEventListener('DOMContentLoaded', () => {
             document.getElementById("btnCloseModal").click();
             let table = document.getElementById("tableBodyCities");
             table.innerHTML = "";
-            notifier.success('Your search history was successful cleared.', options);
+            notifier.success('Your search history was cleared.', options);
         } else {
             notifier.warning('Your search history is already empty.')
         }
     });
 
-    // Call the Top10 function
-    searchTop10();
+    document.getElementById("btnTop10").addEventListener('click', () => {
+        // Call the Top 10 function
+        searchTop10();
+    })
 
     // ----------- Functions ----------- //
 
@@ -201,25 +203,129 @@ window.addEventListener('DOMContentLoaded', () => {
     // This function searches for the Top 10 largest earthquakes
 
     async function searchTop10() {
+
+        // Getting the actual date
         const date = new Date();
         const year = date.getFullYear();
         const month = date.getMonth() + 1;
         const day = date.getDate();
         const inputDate = `${year}-${month}-${day}`;
-        const maxRows = null;
 
-        // Bounding box coordinates fot the entire world
-        const north = 85;
-        const south = -85;
+        // Bounding box coordinates for the entire world
+        const north = 90;
+        const south = -90;
         const east = 180;
         const west = -180;
 
         // Calling the Geonames API to get the Earthquakes, I am saving my username for this service in a constant
         const username = 'plalcedo';
-        const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&date=${inputDate}&username=${username}`);
+        const maxRows = 500;
+        const minMagnitude = 6;
+
+        // Creating an object to save the earthquakes from the last 12 months
+        let eq12Months = {
+            eqArray: []
+        };
+
+        let top10 = eq12Months.eqArray;
+
+        // Im going to look for the last 500 earthquakes (that is the API limit) with a min magnitude of 5, then I will filter them to clear all the ones out of date
+
+        const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&maxRows=${maxRows}&date=${inputDate}&minMagnitude=${minMagnitude}&username=${username}`);
         const earthquakes = await geonamesResponse.json();
 
-        console.log(earthquakes);
+        const eq = earthquakes.earthquakes;
+
+        for (let i = 0; i < eq.length; i++) {
+
+            // The substring() method will allow me to get the first four digits of the datetime (those correspond to the year 
+            // If the year is < than (year - 1), that earthquake does not count)
+            const eqYear = Number(eq[i].datetime.substring(0, 4));
+
+            if (eqYear < year - 1) {
+                delete eq[i];
+            } else if (eqYear == year - 1) {
+
+                // If we are here, it means its the previous year, for example: 2021 => 2020. Now it is time to filter by month
+                // If the month of the earthquake is < than the current month, a year has passed so the earthquake does not count
+                // Now, the substring has to be (5,7) to get the month from datetime
+                const eqMonth = Number(eq[i].datetime.substring(5, 7));
+
+                if (eqMonth < month) {
+                    delete eq[i];
+                } else if (eqMonth == month) {
+
+                    // If we are here, it means its the same month, for example: 10 == 10. Now it is time to filter by day 
+                    // If the day is < than the current day, a year has passes so so the earthquake does not count
+                    // Now, the substring has to be (8,10) to get the day from datetime
+
+                    const eqDay = Number(eq[i].datetime.substring(8, 10));
+
+                    if (eqDay < day) {
+                        delete eq[i];
+                    }
+                }
+            }
+
+            if (eq[i] != undefined) {
+                // Save the earthquake if it was not eliminated (that means it was in the last 12 months)
+                top10.push(eq[i]);
+            }
+        }
+
+        placingTop10(top10);
     }
 
+    async function placingTop10(top10) {
+
+        let table = document.getElementById("tableBodyTop10");
+        table.innerHTML = "";
+
+        // Sorting to get the Top 10
+        top10.sort((a, b) => {
+            return b.magnitude - a.magnitude;
+        });
+
+        console.log(top10);
+
+        /*
+            Template: Location, magnitude, date
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        */
+
+        let asterisk = document.createElement("span");
+        asterisk.innerHTML = "* ";
+        let location = "";
+
+        for (let i = 0; i < 10; i++) {
+            let latitude = top10[i].lat;
+            let longitude = top10[i].lng;
+
+            const reverseGeocoding = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDJO-dRDOFlfo7tQRdFb4sckxGw2G2lyHc&language=en`);
+            const cityByLatLng = await reverseGeocoding.json();
+            const resultLength = cityByLatLng.results.length;
+
+            if (resultLength == 1) {
+                location = asterisk.innerHTML + cityByLatLng.results[resultLength - 1].formatted_address;
+            } else {
+                location = cityByLatLng.results[resultLength - 1].formatted_address;
+            }
+
+            let magnitude = top10[i].magnitude;
+            let date = top10[i].datetime;
+            let row = `
+                        <tr>
+                            <td>${i+1}</td>
+                            <td>${location} (${latitude}, ${longitude})</td>
+                            <td>${magnitude}</td>
+                            <td>${date}</td>
+                        </tr>
+                     `;
+            table.innerHTML += row;
+        }
+    }
 });

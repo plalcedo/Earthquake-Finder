@@ -23,7 +23,7 @@
             <div class="navbar-nav nv">
                 <a class="nav-link active" href="index.html">Home<span class="sr-only">(current)</span></a>
                 <a class="nav-link" data-toggle="modal" data-target="#historyModal" id="btnSearchHistory">Search history</a>
-                <a class="nav-link" data-toggle="modal" data-target="#top10Modal">Top 10</a>
+                <a class="nav-link" data-toggle="modal" data-target="#top10Modal" id="btnTop10">Top 10</a>
             </div>
         </div>
     </nav>
@@ -90,11 +90,13 @@
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
+                                <th>#</th>
                                 <th>Location</th>
                                 <th>Magnitude</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
+                        <p>Some results may show their global code because those coordinates do not belong to any territory. <span>*</span></p>
                         <tbody id="tableBodyTop10">
 
                         </tbody>

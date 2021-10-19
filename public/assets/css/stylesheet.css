@@ -44,6 +44,8 @@ footer {
     margin-top: 20px;
     margin-bottom: 20px;
     margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    border-radius: 10px;
 }
 
 #information p {
