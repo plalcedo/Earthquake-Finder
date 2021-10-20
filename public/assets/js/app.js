@@ -55,7 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById("btnTop10").addEventListener('click', () => {
         // Call the Top 10 function
-        searchTop10();
+        loadTop10List();
     })
 
     // ---------------------- Functions ---------------------- //
@@ -140,7 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <p>Date: ${datetime}</p>
                         <p>Magnitude: ${magnitude}</p>
                         <p>Depth: ${depth}</p>
-                        <p>Position:</p>
+                        <p>Location:</p>
                         <ul>
                             <li>Latitude: ${lat}</li>
                             <li>Longitude: ${lng}</li>
@@ -204,6 +204,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // This function searches for the Top 10 largest earthquakes
+
+    function loadTop10List() {
+        new AWN().async(searchTop10(), 'Top 10 list ready!', options)
+    }
 
     async function searchTop10() {
 
@@ -276,11 +280,6 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        placingTop10(top10);
-    }
-
-    async function placingTop10(top10) {
-
         let table = document.getElementById("tableBodyTop10");
         table.innerHTML = "";
 
@@ -331,4 +330,5 @@ window.addEventListener('DOMContentLoaded', () => {
             table.innerHTML += row;
         }
     }
+
 });
