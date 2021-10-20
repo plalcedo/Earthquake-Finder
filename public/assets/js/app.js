@@ -288,8 +288,6 @@ window.addEventListener('DOMContentLoaded', () => {
             return b.magnitude - a.magnitude;
         });
 
-        console.log(top10);
-
         /*
             Template: Location, magnitude, date
             <ul>
