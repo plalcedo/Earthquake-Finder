@@ -83,7 +83,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             // Calling the Geonames API to get the Earthquakes, I am saving my username for this service in a constant
             const username = 'plalcedo';
-            const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&username=${username}`);
+            const geonamesResponse = await fetch(`https://secure.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&username=${username}`);
             const earthquakes = await geonamesResponse.json();
             const eartquakesLength = earthquakes.earthquakes.length;
 
@@ -234,7 +234,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // Im going to look for the last 500 earthquakes (that is the API limit) with a min magnitude of 5, then I will filter them to clear all the ones out of date
 
-        const geonamesResponse = await fetch(`http://api.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&maxRows=${maxRows}&date=${inputDate}&minMagnitude=${minMagnitude}&username=${username}`);
+        const geonamesResponse = await fetch(`https://secure.geonames.org/earthquakesJSON?north=${north}&south=${south}&east=${east}&west=${west}&maxRows=${maxRows}&date=${inputDate}&minMagnitude=${minMagnitude}&username=${username}`);
         const earthquakes = await geonamesResponse.json();
 
         const eq = earthquakes.earthquakes;
